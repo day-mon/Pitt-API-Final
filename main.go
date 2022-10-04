@@ -61,7 +61,7 @@ func main() {
 	v1 := router.Group("/v1")
 	{
 		cc := new(controllers.CourseController)
-		v1.POST("/course/getByTermAndSubject", cc.GetByTermAndSubject)
+		v1.POST("/courses/info", cc.GetByTermAndSubject)
 	}
 
 	router.NoRoute(func(context *gin.Context) {
