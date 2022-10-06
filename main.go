@@ -52,6 +52,11 @@ func main() {
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(RequestIDMiddleware())
 
+	defer router.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusNotFound, "html/404.html", gin.H{})
+
+	})
+
 	router.GET("/health", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"healthy": "true",
@@ -61,13 +66,10 @@ func main() {
 	v1 := router.Group("/v1")
 	{
 		cc := new(controllers.CourseController)
-		v1.POST("/courses/info", cc.GetByTermAndSubject)
+		v1.POST("/courses/info", cc.GetCourseInfo)
+		v1.GET("/course/:term/:number", cc.GetCourse)
 	}
 
-	router.NoRoute(func(context *gin.Context) {
-		context.HTML(404, "html/404.html", gin.H{})
-	})
-
-	router.Run()
+	router.Run(":7777")
 
 }
