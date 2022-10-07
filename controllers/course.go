@@ -102,7 +102,6 @@ func ValidateParams(params *CourseFunctionParams) (bool, error) {
 	}
 
 	if !termValid {
-		// format string to include the term
 		return false, errors.New("Term [" + params.Term + "] is not valid")
 	}
 
