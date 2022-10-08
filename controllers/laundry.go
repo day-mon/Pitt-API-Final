@@ -50,7 +50,7 @@ func (c *LaundryController) GetByDormitory(context *gin.Context) {
 	}
 
 	// convert json response to Laundry struct
-	laundry, err := models.LaundryObject{}.AsLaundryObject(json, dormitory)
+	laundry, err := models.AsLaundryObject(json, dormitory)
 	if err != nil {
 		context.JSON(400, gin.H{"error": err.Error()})
 		return

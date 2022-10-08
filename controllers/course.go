@@ -5,7 +5,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
-	"log"
+	"pittapi/models"
+	_ "pittapi/models"
 	"regexp"
 	"strconv"
 	"strings"
@@ -45,8 +46,22 @@ func (c *CourseController) GetCourseInfo(context *gin.Context) {
 
 	}
 
+	var courseInfo []models.CourseInfoResponse
+	err = json.Unmarshal([]byte(jsonStr), &courseInfo)
+	if err != nil {
+		context.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// convert to CourseInfoModel
+	var res []models.CourseModel
+	for _, course := range courseInfo {
+		res = append(res, models.ConvertToCourseModelFromCourseInfo(course))
+	}
+
 	// return response
-	context.Data(200, gin.MIMEJSON, []byte(jsonStr))
+	context.JSON(200, res)
+
 }
 
 // GetCourse @Summary Get a course
@@ -55,9 +70,7 @@ func (c *CourseController) GetCourseInfo(context *gin.Context) {
 // @Tags Course
 // @Param term path string true "Term"
 // @Param number path string true "Course Number"
-// @Success 200 {string} string "OK"
-// @Failure 400 {string} string "Bad Request"
-// @Failure 500 {string} string "Internal Server Error"
+// @Success 200 {object} models.CourseModel "OK"
 // @Router /course/{term}/{number} [get]
 func (c *CourseController) GetCourse(context *gin.Context) {
 	term := context.Param("term")
@@ -91,15 +104,19 @@ func (c *CourseController) GetCourse(context *gin.Context) {
 	}
 	// inline string array
 
-	finalJson, err := omitKeys(jsonStr, []string{"cfg", "additionalLinks"})
-
+	var response models.CourseResponse
+	err = json.Unmarshal([]byte(jsonStr), &response)
 	if err != nil {
-		context.Data(200, gin.MIMEJSON, []byte(jsonStr))
-		// log a warning
-		log.Fatal("error omitting cfg key")
+		context.JSON(400, gin.H{"error": err.Error()})
+		return
 	}
 
-	context.Data(200, gin.MIMEJSON, []byte(finalJson))
+	// get the course info
+	var res = models.ConvertToCourseModelFromCourseResponse(response)
+
+	// return response
+	context.JSON(200, res)
+
 }
 
 func GetCourse(params CourseFunctionParams, ctx *gin.Context) (string, error) {
@@ -178,22 +195,4 @@ func ValidateTerm(term string) (bool, error) {
 	termRegex := "2\\d\\d[147]"
 	// test the regex
 	return regexp.Match(termRegex, []byte(term))
-}
-
-func omitKeys(jsonStr string, keys []string) (string, error) {
-	var i interface{}
-	if err := json.Unmarshal([]byte(jsonStr), &i); err != nil {
-		return "", err
-	}
-	if m, ok := i.(map[string]interface{}); ok {
-		for _, key := range keys {
-			delete(m, key) // No problem if "foo" isn't in the map
-		}
-	}
-
-	output, err := json.Marshal(i)
-	if err != nil {
-		return "", err
-	}
-	return string(output), nil
 }

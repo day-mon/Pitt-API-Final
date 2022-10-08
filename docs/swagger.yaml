@@ -15,6 +15,79 @@ definitions:
       term:
         type: string
     type: object
+  models.CourseModel:
+    properties:
+      building:
+        type: string
+      campus:
+        type: string
+      career:
+        type: string
+      classAttributes:
+        type: string
+      classCapacity:
+        type: integer
+      classNumber:
+        type: integer
+      components:
+        type: string
+      description:
+        type: string
+      dropConsent:
+        type: string
+      endDate:
+        type: string
+      endDateAndEndTime:
+        type: integer
+      endTime:
+        type: string
+      enrollmentRequirements:
+        type: string
+      grading:
+        type: string
+      hasTopic:
+        type: boolean
+      identifier:
+        type: string
+      instructors:
+        items:
+          type: string
+        type: array
+      location:
+        type: string
+      meetingDays:
+        description: class details
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      seatsOpen:
+        type: integer
+      seatsTaken:
+        type: integer
+      session:
+        type: string
+      startDate:
+        type: string
+      startDateAndStartTime:
+        type: integer
+      startTime:
+        type: string
+      status:
+        description: class availability
+        type: string
+      timezone:
+        type: string
+      topic:
+        type: string
+      units:
+        type: string
+      waitListCapacity:
+        type: integer
+      waitListTotal:
+        type: integer
+    type: object
   models.LaundryObject:
     properties:
       appliance:
@@ -58,15 +131,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
+            $ref: '#/definitions/models.CourseModel'
       tags:
       - Course
   /courses/info:

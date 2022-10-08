@@ -23,7 +23,7 @@ type LaundryObject struct {
 	Location      string `json:"location"`
 }
 
-func (l LaundryObject) AsLaundryObject(jsonStr string, location string) ([]LaundryObject, error) {
+func AsLaundryObject(jsonStr string, location string) ([]LaundryObject, error) {
 	var model LaundryModel
 	err := json.Unmarshal([]byte(jsonStr), &model)
 
