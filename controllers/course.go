@@ -12,6 +12,7 @@ import (
 )
 
 type CourseController struct{}
+
 type CourseFunctionParams struct {
 	Term             string `json:"term,omitempty"`
 	Subject          string `json:"subject,omitempty"`
@@ -21,6 +22,12 @@ type CourseFunctionParams struct {
 	CourseNumber     string `json:"courseNumber,omitempty"`
 }
 
+// GetCourseInfo @Summary Gets a list of courses by subject and term
+// @Accept json
+// @Produce json
+// @tags Course
+// @Router /courses/info [post]
+// @Param body body CourseFunctionParams true "Term and Subject are mandatory"
 func (c *CourseController) GetCourseInfo(context *gin.Context) {
 
 	// get post BODY from request
@@ -42,6 +49,16 @@ func (c *CourseController) GetCourseInfo(context *gin.Context) {
 	context.Data(200, gin.MIMEJSON, []byte(jsonStr))
 }
 
+// GetCourse @Summary Get a course
+// @Accept json
+// @Produce json
+// @Tags Course
+// @Param term path string true "Term"
+// @Param number path string true "Course Number"
+// @Success 200 {string} string "OK"
+// @Failure 400 {string} string "Bad Request"
+// @Failure 500 {string} string "Internal Server Error"
+// @Router /course/{term}/{number} [get]
 func (c *CourseController) GetCourse(context *gin.Context) {
 	term := context.Param("term")
 	courseNumber := context.Param("number")

@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	models "awesomeProject/models"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
+	models "pittapi/models"
 	"strings"
 )
 
@@ -26,6 +26,13 @@ var laundryApiCalls = map[string]string{
 	"CPAS":     "581339013",
 }
 
+// GetByDormitory @Summary Gets laundry activity for a dorm
+// @Accept json
+// @Produce json
+// @Tags Laundry
+// @Router /laundry/{dormitory} [get]
+// @Param dormitory path string true "Dormitory to get laundry data for"
+// @Success 200 {object} models.LaundryObject
 func (c *LaundryController) GetByDormitory(context *gin.Context) {
 	// get url / params
 	dormitory := strings.ToUpper(context.Param("dormitory"))

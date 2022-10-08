@@ -48,11 +48,11 @@ This is a REST API for the University of Pittsburgh. It is not affiliated with t
 
 - `/v1/api/laundry`
   -  GET `/:dormitory` - Get information about all laundry machines in a dormitory
-    -  Get Parameters:
-      - `dormitory` - The dormitory to get laundry information for
-        - Code Example in **JavaScript**:
-          ```js
-          fetch('https://pittapi.example.com/v1/api/laundry/willow')
-          ```
-        - Response Body:
-          - `machines` - Array of machine objects
+  - Get Parameters:
+    - `dormitory` - The dormitory to get laundry information for
+      - Code Example in **JavaScript**:
+        ```js
+        fetch('https://pittapi.example.com/v1/api/laundry/willow')
+        ```
+  - Response Body:
+    - `course` - The course object

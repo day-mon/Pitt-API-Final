@@ -1,14 +1,16 @@
 package main
 
 import (
-	"awesomeProject/controllers"
 	"github.com/gin-contrib/cache"
 	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	uuid "github.com/twinj/uuid"
-	"log"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/twinj/uuid"
 	"net/http"
+	"pittapi/controllers"
+	_ "pittapi/docs"
 	"time"
 )
 
@@ -20,23 +22,29 @@ func RequestIDMiddleware() gin.HandlerFunc {
 	}
 }
 
-func ExitMiddleWare() gin.HandlerFunc {
-	return func(context *gin.Context) {
-		log.Println("Example")
-	}
-}
-
+// @title University of Pittsburgh API
+// @description This is a sample server for Pitt API.
+// @version 1.0.0
+// @BasePath /v1/api
+// @host 0.0.0.0:8080
+// @schemes http https
+// @name University of Pittsburgh API
+// @description Github: https://github.com/day-mon/Pitt-API-Final
 func main() {
-	router := gin.Default()
+	router := gin.New()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(RequestIDMiddleware())
+	router.Use(gin.Logger())
 
-	router.NoRoute(func(c *gin.Context) {
-		c.Redirect(http.StatusMovedPermanently, "/")
-	})
+	// run gin in release mode if we are in production environment if not run in debug mode
 
-	router.StaticFile("/", "./html/404.html")
-
+	// @Summary Simple health check
+	// @Description Simple health check
+	// @Tags Health
+	// @Accept  json
+	// @Produce  json
+	// @Success 200 {object} map[string]string
+	// @Router /health [get]
 	router.GET("/health", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"healthy": "true",
@@ -44,6 +52,11 @@ func main() {
 	})
 
 	store := persistence.NewInMemoryStore(time.Second)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.NoRoute(func(context *gin.Context) {
+		context.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
+	})
 
 	v1 := router.Group("/v1/api")
 	{
@@ -56,6 +69,7 @@ func main() {
 
 	}
 
-	router.Run(":7777")
+	gin.SetMode(gin.TestMode)
+	router.Run(":8080")
 
 }

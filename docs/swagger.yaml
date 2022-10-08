@@ -1,0 +1,110 @@
+basePath: /v1/api
+definitions:
+  controllers.CourseFunctionParams:
+    properties:
+      campus:
+        type: string
+      courseNumber:
+        type: string
+      enrollmentStatus:
+        type: string
+      pageNumber:
+        type: integer
+      subject:
+        type: string
+      term:
+        type: string
+    type: object
+  models.LaundryObject:
+    properties:
+      appliance:
+        type: string
+      isInUse:
+        type: boolean
+      isWorking:
+        type: boolean
+      location:
+        type: string
+      timeRemaining:
+        type: string
+      type:
+        type: string
+    type: object
+host: 0.0.0.0:8080
+info:
+  contact: {}
+  description: 'Github: https://github.com/day-mon/Pitt-API-Final'
+  title: University of Pittsburgh API
+  version: 1.0.0
+paths:
+  /course/{term}/{number}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Term
+        in: path
+        name: term
+        required: true
+        type: string
+      - description: Course Number
+        in: path
+        name: number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      tags:
+      - Course
+  /courses/info:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Term and Subject are mandatory
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CourseFunctionParams'
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - Course
+  /laundry/{dormitory}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dormitory to get laundry data for
+        in: path
+        name: dormitory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LaundryObject'
+      tags:
+      - Laundry
+schemes:
+- http
+- https
+swagger: "2.0"

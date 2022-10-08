@@ -1,0 +1,169 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Github: https://github.com/day-mon/Pitt-API-Final",
+        "title": "University of Pittsburgh API",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "host": "0.0.0.0:8080",
+    "basePath": "/v1/api",
+    "paths": {
+        "/course/{term}/{number}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Course"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Term",
+                        "name": "term",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Course Number",
+                        "name": "number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/courses/info": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Course"
+                ],
+                "parameters": [
+                    {
+                        "description": "Term and Subject are mandatory",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.CourseFunctionParams"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/laundry/{dormitory}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Laundry"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dormitory to get laundry data for",
+                        "name": "dormitory",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.LaundryObject"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.CourseFunctionParams": {
+            "type": "object",
+            "properties": {
+                "campus": {
+                    "type": "string"
+                },
+                "courseNumber": {
+                    "type": "string"
+                },
+                "enrollmentStatus": {
+                    "type": "string"
+                },
+                "pageNumber": {
+                    "type": "integer"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "term": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LaundryObject": {
+            "type": "object",
+            "properties": {
+                "appliance": {
+                    "type": "string"
+                },
+                "isInUse": {
+                    "type": "boolean"
+                },
+                "isWorking": {
+                    "type": "boolean"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "timeRemaining": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
