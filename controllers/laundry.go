@@ -13,7 +13,7 @@ type LaundryController struct{}
 var laundryApiCalls = map[string]string{
 	"HICKORY":  "5813396",
 	"BRIAR":    "581339005",
-	"BUCKHOR":  "5813393",
+	"BUCKHORN": "5813393",
 	"LLC":      "58133912",
 	"OAK":      "5813391",
 	"HAWTHORN": "5813397",
