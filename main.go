@@ -2,10 +2,14 @@ package main
 
 import (
 	"awesomeProject/controllers"
+	"github.com/gin-contrib/cache"
+	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/twinj/uuid"
+	"log"
 	"net/http"
+	"time"
 )
 
 func RequestIDMiddleware() gin.HandlerFunc {
@@ -16,14 +20,22 @@ func RequestIDMiddleware() gin.HandlerFunc {
 	}
 }
 
+func ExitMiddleWare() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		log.Println("Example")
+	}
+}
+
 func main() {
 	router := gin.Default()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(RequestIDMiddleware())
 
 	router.NoRoute(func(c *gin.Context) {
-		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+		c.Redirect(http.StatusMovedPermanently, "/")
 	})
+
+	router.StaticFile("/", "./html/404.html")
 
 	router.GET("/health", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
@@ -31,14 +43,16 @@ func main() {
 		})
 	})
 
+	store := persistence.NewInMemoryStore(time.Second)
+
 	v1 := router.Group("/v1/api")
 	{
 		cc := new(controllers.CourseController)
 		v1.POST("/courses/info", cc.GetCourseInfo)
-		v1.GET("/course/:term/:number", cc.GetCourse)
+		v1.GET("/course/:term/:number", cache.CachePage(store, time.Minute, cc.GetCourse))
 
 		lc := new(controllers.LaundryController)
-		v1.GET("/laundry/:dormitory", lc.GetByDormitory)
+		v1.GET("/laundry/:dormitory", cache.CachePage(store, time.Minute, lc.GetByDormitory))
 
 	}
 

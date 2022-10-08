@@ -30,7 +30,6 @@ func (l LaundryObject) AsLaundryObject(jsonStr string, location string) ([]Laund
 	if err != nil {
 		return nil, err
 	}
-
 	var objects []LaundryObject
 	for _, machine := range model.Objects {
 		objects = append(objects, LaundryObject{
