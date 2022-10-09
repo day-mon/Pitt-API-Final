@@ -409,17 +409,11 @@ func setCourseTimes(c CourseResponse, cm *CourseModel) {
 	startDate = convertDateToISO(startDate)
 	endDate = convertDateToISO(endDate)
 
-	startTimeObj, startErr := time.Parse("2006-01-02 15:04", startDate+" "+startTimeMilitary)
-	endDateObj, endErr := time.Parse("2006-01-02 15:04", endDate+" "+endTimeMilitary)
+	startTimeObj, startErr := time.Parse("2006-01-02 15:04 MST", startDate+" "+startTimeMilitary+" EST")
+	endDateObj, endErr := time.Parse("2006-01-02 15:04 MST", endDate+" "+endTimeMilitary+" EST")
 
-	if isDaylightSavings(startTimeObj) {
-		startTimeObj = startTimeObj.Add(time.Hour * 4)
-		endDateObj = endDateObj.Add(time.Hour * 4)
-		cm.Timezone = "America/New_York"
-	} else {
-		startTimeObj = startTimeObj.Add(time.Hour * 5)
-		endDateObj = endDateObj.Add(time.Hour * 5)
-		cm.Timezone = "America/New_York"
+	if startTimeObj.Hour() > endDateObj.Hour() {
+		endDateObj = endDateObj.Add(time.Hour)
 	}
 
 	if startErr != nil || endErr != nil {
@@ -431,6 +425,7 @@ func setCourseTimes(c CourseResponse, cm *CourseModel) {
 	// convert Time object to Unix timestamp
 	cm.StartDateAndStartTime = startTimeObj.UnixMilli()
 	cm.EndDateAndEndTime = endDateObj.UnixMilli()
+	cm.Timezone = "America/New_York"
 
 }
 
@@ -464,7 +459,6 @@ func convertTimeToMilitary(time string) (string, error) {
 		startHour += 12
 		time = strconv.Itoa(startHour) + ":" + startTimeSplit[1]
 		return time, nil
-
 	} else if strings.Contains(time, "AM") {
 		time = strings.Replace(time, "AM", "", -1)
 		time = strings.TrimSpace(time)
