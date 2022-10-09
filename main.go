@@ -68,8 +68,6 @@ func main() {
 		v1.GET("/laundry/:dormitory", cache.CachePage(store, time.Minute, lc.GetByDormitory))
 
 	}
-
-	gin.SetMode(gin.TestMode)
 	router.Run(":8080")
 
 }

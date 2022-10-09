@@ -19,125 +19,148 @@ var daysOFWeek = map[string]string{
 }
 
 type CourseResponse struct {
-	ClassEnrollInfo struct {
-		IsRelated        bool `json:"is_related"`
-		LastEnrlDtPassed bool `json:"last_enrl_dt_passed"`
-	} `json:"class_enroll_info"`
-	EnrollDates struct {
-		AppDate     string `json:"app_date"`
-		AppDateEnd  string `json:"app_date_end"`
-		OpenDate    string `json:"open_date"`
-		OpenDateEnd string `json:"open_date_end"`
-	} `json:"enroll_dates"`
-	Messages struct {
-		NoMeetingInfo string `json:"noMeetingInfo"`
-		ReserveInfo   string `json:"reserveInfo"`
-		ShareLink     string `json:"shareLink"`
-		ShareSocial   string `json:"shareSocial"`
-	} `json:"messages"`
-	SectionInfo struct {
-		CatalogDescr struct {
-			CrseCatalogDescription string `json:"crse_catalog_description"`
-		} `json:"catalog_descr"`
-		ClassAvailability struct {
-			ClassCapacity       string `json:"class_capacity"`
-			EnrollmentAvailable int    `json:"enrollment_available"`
-			EnrollmentTotal     string `json:"enrollment_total"`
-			WaitListCapacity    string `json:"wait_list_capacity"`
-			WaitListTotal       string `json:"wait_list_total"`
-		} `json:"class_availability"`
-		ClassDetails struct {
-			AcadCareer      string `json:"acad_career"`
-			AcadCareerDescr string `json:"acad_career_descr"`
-			Campus          string `json:"campus"`
-			CampusCode      string `json:"campus_code"`
-			CatalogNbr      string `json:"catalog_nbr"`
-			ClassComponents string `json:"class_components"`
-			ClassNumber     int    `json:"class_number"`
-			ClassSection    string `json:"class_section"`
-			Component       string `json:"component"`
-			CourseID        string `json:"course_id"`
-			CourseOfferNbr  int    `json:"course_offer_nbr"`
-			CourseStatus    string `json:"course_status"`
-			CourseTitle     string `json:"course_title"`
-			GradingBasis    string `json:"grading_basis"`
-			Institution     string `json:"institution"`
-			InstructionMode string `json:"instruction_mode"`
-			Location        string `json:"location"`
-			SectionDescr    string `json:"section_descr"`
-			Session         string `json:"session"`
-			SessionCode     string `json:"session_code"`
-			Status          string `json:"status"`
-			Subject         string `json:"subject"`
-			Topic           string `json:"topic"`
-			Units           string `json:"units"`
-		} `json:"class_details"`
-		EnrollmentInformation struct {
-			AddConsent         string `json:"add_consent"`
-			ClassAttributes    string `json:"class_attributes"`
-			DropConsent        string `json:"drop_consent"`
-			EnrollRequirements string `json:"enroll_requirements"`
-			RequirementDesig   string `json:"requirement_desig"`
-		} `json:"enrollment_information"`
-		IsCombined bool `json:"is_combined"`
-		Materials  struct {
-			TextbooksMessage       string `json:"textbooks_message"`
-			TxbNone                string `json:"txb_none"`
-			TxbSpecialInstructions string `json:"txb_special_instructions"`
-			TxbStatus              string `json:"txb_status"`
-		} `json:"materials"`
-		Meetings []struct {
-			BldgCd      string `json:"bldg_cd"`
-			DateRange   string `json:"date_range"`
-			EndDate     string `json:"end_date"`
-			Instructors []struct {
-				Email string `json:"email"`
-				Name  string `json:"name"`
-			} `json:"instructors"`
-			MeetingTimeEnd   string `json:"meeting_time_end"`
-			MeetingTimeStart string `json:"meeting_time_start"`
-			MeetingTopic     string `json:"meeting_topic"`
-			Meets            string `json:"meets"`
-			ShowTopic        bool   `json:"show_topic"`
-			StartDate        string `json:"start_date"`
-			StndMtgPat       string `json:"stnd_mtg_pat"`
-			Topic            string `json:"topic"`
-		} `json:"meetings"`
-		Notes struct {
-			ClassNotes   string `json:"class_notes"`
-			SubjectNotes string `json:"subject_notes"`
-		} `json:"notes"`
-		ReserveCaps   []interface{} `json:"reserve_caps"`
-		ValidToEnroll string        `json:"valid_to_enroll"`
-	} `json:"section_info"`
-	ShowValidate   string `json:"show_validate"`
-	ShowWaitlist   string `json:"show_waitlist"`
-	SimilarClasses []struct {
-		AcadCareer      string `json:"acad_career"`
-		CatalogNbr      string `json:"catalog_nbr"`
-		ClassNbr        int    `json:"class_nbr"`
-		ClassSection    string `json:"class_section"`
-		Descr           string `json:"descr"`
-		MeetingPatterns []struct {
-			ClassMtgNbr      int    `json:"class_mtg_nbr"`
-			EndDt            string `json:"end_dt"`
-			Fri              string `json:"fri"`
-			MeetingTimeEnd   string `json:"meeting_time_end"`
-			MeetingTimeStart string `json:"meeting_time_start"`
-			Mon              string `json:"mon"`
-			Sat              string `json:"sat"`
-			StartDt          string `json:"start_dt"`
-			StndMtgPat       string `json:"stnd_mtg_pat"`
-			Sun              string `json:"sun"`
-			Thurs            string `json:"thurs"`
-			Tues             string `json:"tues"`
-			Wed              string `json:"wed"`
-		} `json:"meeting_patterns"`
-		Subject string `json:"subject"`
-		Topic   string `json:"topic"`
-	} `json:"similar_classes"`
+	EnrollDates     EnrollDates     `json:"enroll_dates"`
+	ShowValidate    string          `json:"show_validate"`
+	ShowWaitlist    string          `json:"show_waitlist"`
+	SectionInfo     SectionInfo     `json:"section_info"`
+	ClassEnrollInfo ClassEnrollInfo `json:"class_enroll_info"`
+	AdditionalLinks []interface{}   `json:"additionalLinks"`
+	Cfg             Cfg             `json:"cfg"`
+	Messages        Messages        `json:"messages"`
 }
-
+type EnrollDates struct {
+	AppDate     string `json:"app_date"`
+	OpenDate    string `json:"open_date"`
+	AppDateEnd  string `json:"app_date_end"`
+	OpenDateEnd string `json:"open_date_end"`
+}
+type ClassDetails struct {
+	Institution     string `json:"institution"`
+	Subject         string `json:"subject"`
+	CatalogNbr      string `json:"catalog_nbr"`
+	Status          string `json:"status"`
+	ClassNumber     int    `json:"class_number"`
+	Component       string `json:"component"`
+	CourseOfferNbr  int    `json:"course_offer_nbr"`
+	Session         string `json:"session"`
+	SessionCode     string `json:"session_code"`
+	ClassSection    string `json:"class_section"`
+	SectionDescr    string `json:"section_descr"`
+	Units           string `json:"units"`
+	AcadCareer      string `json:"acad_career"`
+	AcadCareerDescr string `json:"acad_career_descr"`
+	CourseID        string `json:"course_id"`
+	CourseTitle     string `json:"course_title"`
+	CourseStatus    string `json:"course_status"`
+	InstructionMode string `json:"instruction_mode"`
+	GradingBasis    string `json:"grading_basis"`
+	Campus          string `json:"campus"`
+	CampusCode      string `json:"campus_code"`
+	Location        string `json:"location"`
+	Topic           string `json:"topic"`
+	ClassComponents string `json:"class_components"`
+}
+type Instructors struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+type Meetings struct {
+	Meets            string        `json:"meets"`
+	StndMtgPat       string        `json:"stnd_mtg_pat"`
+	MeetingTimeStart string        `json:"meeting_time_start"`
+	MeetingTimeEnd   string        `json:"meeting_time_end"`
+	BldgCd           string        `json:"bldg_cd"`
+	MeetingTopic     string        `json:"meeting_topic"`
+	Instructors      []Instructors `json:"instructors"`
+	StartDate        string        `json:"start_date"`
+	EndDate          string        `json:"end_date"`
+	Topic            string        `json:"topic"`
+	ShowTopic        bool          `json:"show_topic"`
+	DateRange        string        `json:"date_range"`
+}
+type EnrollmentInformation struct {
+	AddConsent         string `json:"add_consent"`
+	DropConsent        string `json:"drop_consent"`
+	EnrollRequirements string `json:"enroll_requirements"`
+	RequirementDesig   string `json:"requirement_desig"`
+	ClassAttributes    string `json:"class_attributes"`
+}
+type ClassAvailability struct {
+	ClassCapacity       string `json:"class_capacity"`
+	EnrollmentTotal     string `json:"enrollment_total"`
+	EnrollmentAvailable int    `json:"enrollment_available"`
+	WaitListCapacity    string `json:"wait_list_capacity"`
+	WaitListTotal       string `json:"wait_list_total"`
+}
+type Notes struct {
+	ClassNotes   string `json:"class_notes"`
+	SubjectNotes string `json:"subject_notes"`
+}
+type CatalogDescr struct {
+	CrseCatalogDescription string `json:"crse_catalog_description"`
+}
+type Materials struct {
+	TxbNone                string `json:"txb_none"`
+	TxbStatus              string `json:"txb_status"`
+	TxbSpecialInstructions string `json:"txb_special_instructions"`
+	TextbooksMessage       string `json:"textbooks_message"`
+}
+type SectionInfo struct {
+	ClassDetails          ClassDetails          `json:"class_details"`
+	Meetings              []Meetings            `json:"meetings"`
+	EnrollmentInformation EnrollmentInformation `json:"enrollment_information"`
+	ClassAvailability     ClassAvailability     `json:"class_availability"`
+	ReserveCaps           []interface{}         `json:"reserve_caps"`
+	IsCombined            bool                  `json:"is_combined"`
+	Notes                 Notes                 `json:"notes"`
+	CatalogDescr          CatalogDescr          `json:"catalog_descr"`
+	Materials             Materials             `json:"materials"`
+	ValidToEnroll         string                `json:"valid_to_enroll"`
+}
+type ClassEnrollInfo struct {
+	LastEnrlDtPassed bool `json:"last_enrl_dt_passed"`
+	IsRelated        bool `json:"is_related"`
+}
+type Cfg struct {
+	IsRelated             bool `json:"is_related"`
+	ShowCrseID            bool `json:"show_crse_id"`
+	ShowCrseOfferNbr      bool `json:"show_crse_offer_nbr"`
+	ShowCampus            bool `json:"show_campus"`
+	ShowLocation          bool `json:"show_location"`
+	ShowConsentToAdd      bool `json:"show_consent_to_add"`
+	ShowConsentToDrop     bool `json:"show_consent_to_drop"`
+	ShowEnrollReq         bool `json:"show_enroll_req"`
+	ShowReqDesig          bool `json:"show_req_desig"`
+	ShowClassAttributes   bool `json:"show_class_attributes"`
+	ShowClassAvailability bool `json:"show_class_availability"`
+	ShowCombined          bool `json:"show_combined"`
+	ShowClassNotes        bool `json:"show_class_notes"`
+	ShowCatalogDescr      bool `json:"show_catalog_descr"`
+	ShowTextbookInfo      bool `json:"show_textbook_info"`
+	ShowCommonAttributes  bool `json:"show_common_attributes"`
+	CanAddToPlanner       bool `json:"can_add_to_planner"`
+	ShowEnroll            bool `json:"show_enroll"`
+	CanAddToCart          bool `json:"can_add_to_cart"`
+	CanEnrollClass        bool `json:"can_enroll_class"`
+	CanValidateClass      bool `json:"can_validate_class"`
+	CanEditClass          bool `json:"can_edit_class"`
+	CanDeleteClass        bool `json:"can_delete_class"`
+	ShowFriendSuggest     bool `json:"show_friend_suggest"`
+	ShowBookstore         bool `json:"show_bookstore"`
+	ShowShare             bool `json:"show_share"`
+	ShowWaitList          bool `json:"show_wait_list"`
+	ShowInstructionMode   bool `json:"show_instruction_mode"`
+	ShowTopic             bool `json:"show_topic"`
+	ShowAddToWishList     bool `json:"show_add_to_wish_list"`
+	WishListEnabled       bool `json:"wish_list_enabled"`
+	ShowActions           bool `json:"show_actions"`
+}
+type Messages struct {
+	ShareLink     string `json:"shareLink"`
+	ShareSocial   string `json:"shareSocial"`
+	ReserveInfo   string `json:"reserveInfo"`
+	NoMeetingInfo string `json:"noMeetingInfo"`
+}
 type CourseInfoResponse struct {
 	Index                int    `json:"index"`
 	CrseID               string `json:"crse_id"`
@@ -243,18 +266,7 @@ func ConvertToCourseModelFromCourseInfo(c CourseInfoResponse) CourseModel {
 	course.EndTime = c.Meetings[0].EndTime
 	course.StartDate = c.StartDt
 	course.EndDate = c.EndDt
-
-	convertedTime := convertDateToISO(strings.ReplaceAll(c.Meetings[0].StartDt, "/", "-"))
-
-	time, err := time.Parse("2006-01-02", convertedTime)
-
-	if err == nil {
-		if isDaylightSavings(time) {
-			course.Timezone = "EDT"
-		} else {
-			course.Timezone = "EST"
-		}
-	}
+	course.Timezone = "America/New_York"
 	course.Units = c.Units
 	course.DropConsent = c.RqmntDesigntn
 	course.Name = c.Descr
@@ -403,11 +415,11 @@ func setCourseTimes(c CourseResponse, cm *CourseModel) {
 	if isDaylightSavings(startTimeObj) {
 		startTimeObj = startTimeObj.Add(time.Hour * 4)
 		endDateObj = endDateObj.Add(time.Hour * 4)
-		cm.Timezone = "EDT"
+		cm.Timezone = "America/New_York"
 	} else {
 		startTimeObj = startTimeObj.Add(time.Hour * 5)
 		endDateObj = endDateObj.Add(time.Hour * 5)
-		cm.Timezone = "EST"
+		cm.Timezone = "America/New_York"
 	}
 
 	if startErr != nil || endErr != nil {
@@ -417,8 +429,8 @@ func setCourseTimes(c CourseResponse, cm *CourseModel) {
 	}
 
 	// convert Time object to Unix timestamp
-	cm.StartDateAndStartTime = startTimeObj.Unix()
-	cm.EndDateAndEndTime = endDateObj.Unix()
+	cm.StartDateAndStartTime = startTimeObj.UnixMilli()
+	cm.EndDateAndEndTime = endDateObj.UnixMilli()
 
 }
 
