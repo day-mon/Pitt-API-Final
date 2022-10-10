@@ -4,6 +4,11 @@
 
 This is a REST API for the University of Pittsburgh. It is not affiliated with the University of Pittsburgh in any way.
 
+## Dependencies 
+If you want to run this in a docker container everything will be all set :)
+If you want to run this locally, you will need to install the following dependencies:
+- tzdata (for timezones)
+
 ## Endpoints
 - `/v1/api/courses` - Base endpoint for all courses related endpoints
   - POST: `/courses/info` - Get information about many courses
