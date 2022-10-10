@@ -33,7 +33,7 @@ func RequestIDMiddleware() gin.HandlerFunc {
 // @description Github: https://github.com/day-mon/Pitt-API-Final
 func main() {
 
-	const VERSION = "1.0.1"
+	const VERSION = "1.0.2"
 
 	router := gin.New()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))

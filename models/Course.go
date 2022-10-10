@@ -380,9 +380,7 @@ func ConvertToCourseModelFromCourseResponse(course CourseResponse) CourseModel {
 
 		return courseModel
 	}
-
 	courseModel.HasTopic = false
-
 	return courseModel
 }
 
@@ -412,9 +410,18 @@ func setCourseTimes(c CourseResponse, cm *CourseModel) {
 	startTimeObj, startErr := time.Parse("2006-01-02 15:04 MST", startDate+" "+startTimeMilitary+" EST")
 	endDateObj, endErr := time.Parse("2006-01-02 15:04 MST", endDate+" "+endTimeMilitary+" EST")
 
-	if startTimeObj.Hour() > endDateObj.Hour() {
-		endDateObj = endDateObj.Add(time.Hour)
-	}
+	startHour := startTimeObj.Hour()
+	endHour := endDateObj.Hour()
+
+	startMinute := startTimeObj.Minute()
+	endMinute := endDateObj.Minute()
+
+	// go est time zone
+	loc, _ := time.LoadLocation("America/New_York")
+
+	// set start and end times in startTimeObj and endDateObj
+	startTimeObj = time.Date(startTimeObj.Year(), startTimeObj.Month(), startTimeObj.Day(), startHour, startMinute, 0, 0, loc)
+	endDateObj = time.Date(endDateObj.Year(), endDateObj.Month(), endDateObj.Day(), endHour, endMinute, 0, 0, loc)
 
 	if startErr != nil || endErr != nil {
 		cm.StartDateAndStartTime = -1
