@@ -11,6 +11,8 @@ RUN go mod download
 
 COPY . .
 
+RUN apk --no-cache add tzdata
+
 RUN CGO_ENABLED=0 go build -ldflags="-X 'main.version=${VERSION}'-w -s" -o api main.go
 
 FROM alpine
