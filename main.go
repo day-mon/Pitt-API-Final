@@ -8,6 +8,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/twinj/uuid"
+	"log"
 	"net/http"
 	"pittapi/controllers"
 	_ "pittapi/docs"
@@ -31,12 +32,13 @@ func RequestIDMiddleware() gin.HandlerFunc {
 // @name University of Pittsburgh API
 // @description Github: https://github.com/day-mon/Pitt-API-Final
 func main() {
+
+	const VERSION = "1.0.1"
+
 	router := gin.New()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(RequestIDMiddleware())
 	router.Use(gin.Logger())
-
-	// run gin in release mode if we are in production environment if not run in debug mode
 
 	// @Summary Simple health check
 	// @Description Simple health check
@@ -68,6 +70,7 @@ func main() {
 		v1.GET("/laundry/:dormitory", cache.CachePage(store, time.Minute, lc.GetByDormitory))
 
 	}
+	log.Println("Running Pitt API version " + VERSION)
 	router.Run(":8080")
 
 }
