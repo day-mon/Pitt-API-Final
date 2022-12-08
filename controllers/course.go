@@ -5,13 +5,15 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
-	"log"
+	"pittapi/models"
+	_ "pittapi/models"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 type CourseController struct{}
+
 type CourseFunctionParams struct {
 	Term             string `json:"term,omitempty"`
 	Subject          string `json:"subject,omitempty"`
@@ -21,7 +23,14 @@ type CourseFunctionParams struct {
 	CourseNumber     string `json:"courseNumber,omitempty"`
 }
 
+// GetCourseInfo @Summary Gets a list of courses by subject and term
+// @Accept json
+// @Produce json
+// @tags Course
+// @Router /courses/info [post]
+// @Param body body CourseFunctionParams true "Term and Subject are mandatory"
 func (c *CourseController) GetCourseInfo(context *gin.Context) {
+
 	// get post BODY from request
 	var params CourseFunctionParams
 	if err := context.ShouldBindJSON(&params); err != nil {
@@ -37,28 +46,50 @@ func (c *CourseController) GetCourseInfo(context *gin.Context) {
 
 	}
 
+	var courseInfo []models.CourseInfoResponse
+	err = json.Unmarshal([]byte(jsonStr), &courseInfo)
+	if err != nil {
+		context.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// convert to CourseInfoModel
+	var res []models.CourseModel
+	for _, course := range courseInfo {
+		res = append(res, models.ConvertToCourseModelFromCourseInfo(course))
+	}
+
 	// return response
-	context.Data(200, gin.MIMEJSON, []byte(jsonStr))
+	context.JSON(200, res)
+
 }
 
-func getCourseLogic(context *gin.Context) (string, error) {
+// GetCourse @Summary Get a course
+// @Accept json
+// @Produce json
+// @Tags Course
+// @Param term path string true "Term"
+// @Param number path string true "Course Number"
+// @Success 200 {object} models.CourseModel "OK"
+// @Router /course/{term}/{number} [get]
+func (c *CourseController) GetCourse(context *gin.Context) {
 	term := context.Param("term")
 	courseNumber := context.Param("number")
 
 	if term == "" {
 		context.JSON(400, gin.H{"error": "term cannot be empty"})
-		return "", errors.New("term can not be empty")
+		return
 	}
 
 	_, err := ValidateTerm(term)
 	if err != nil {
 		context.JSON(400, gin.H{"error": err.Error()})
-		return "", err
+		return
 	}
 
 	if courseNumber == "" {
 		context.JSON(400, gin.H{"error": "courseNumber cannot be empty"})
-		return "", err
+		return
 	}
 
 	params := CourseFunctionParams{
@@ -69,37 +100,22 @@ func getCourseLogic(context *gin.Context) (string, error) {
 	jsonStr, err := GetCourse(params, context)
 	if err != nil {
 		context.JSON(400, gin.H{"error": err.Error()})
-		return "", err
+		return
 	}
-	return jsonStr, nil
-}
+	// inline string array
 
-func (c *CourseController) GetCourse(context *gin.Context) {
-	jsonStr, err := getCourseLogic(context)
-
+	var response models.CourseResponse
+	err = json.Unmarshal([]byte(jsonStr), &response)
 	if err != nil {
+		context.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	finalJson, err := omitKeys(jsonStr, []string{"cfg", "additionalLinks"})
+	// get the course info
+	var res = models.ConvertToCourseModelFromCourseResponse(response)
 
-	if err != nil {
-		context.Data(200, gin.MIMEJSON, []byte(jsonStr))
-		// log a warning
-		log.Fatal("error omitting cfg key")
-	}
-
-	context.Data(200, gin.MIMEJSON, []byte(finalJson))
-}
-
-func (c *CourseController) GetCourseV2(context *gin.Context) {
-	jsonStr, err := getCourseLogic(context)
-
-	if err != nil {
-		return
-	}
-
-	context.Data(200, gin.MIMEJSON, []byte(jsonStr))
+	// return response
+	context.JSON(200, res)
 
 }
 
@@ -179,22 +195,4 @@ func ValidateTerm(term string) (bool, error) {
 	termRegex := "2\\d\\d[147]"
 	// test the regex
 	return regexp.Match(termRegex, []byte(term))
-}
-
-func omitKeys(jsonStr string, keys []string) (string, error) {
-	var i interface{}
-	if err := json.Unmarshal([]byte(jsonStr), &i); err != nil {
-		return "", err
-	}
-	if m, ok := i.(map[string]interface{}); ok {
-		for _, key := range keys {
-			delete(m, key) // No problem if "foo" isn't in the map
-		}
-	}
-
-	output, err := json.Marshal(i)
-	if err != nil {
-		return "", err
-	}
-	return string(output), nil
 }

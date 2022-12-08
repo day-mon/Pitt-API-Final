@@ -33,7 +33,7 @@ func RequestIDMiddleware() gin.HandlerFunc {
 // @description Github: https://github.com/day-mon/Pitt-API-Final. [v1 and v2 is available through same endpoints]
 func main() {
 
-	const VERSION = "1.0.2"
+	const VERSION = "1.0.3"
 
 	router := gin.New()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
@@ -69,12 +69,6 @@ func main() {
 		lc := new(controllers.LaundryController)
 		v1.GET("/laundry/:dormitory", cache.CachePage(store, time.Minute, lc.GetByDormitory))
 
-	}
-
-	v2 := router.Group("/v2/api")
-	{
-		cc := new(controllers.CourseController)
-		v2.GET("/course/:term/:number", cache.CachePage(store, time.Minute, cc.GetCourseV2))
 	}
 
 	log.Println("Running Pitt API version " + VERSION)
