@@ -463,7 +463,9 @@ func convertTimeToMilitary(time string) (string, error) {
 		time = strings.TrimSpace(time)
 		startTimeSplit := strings.Split(time, ":")
 		startHour, _ := strconv.Atoi(startTimeSplit[0])
-		startHour += 12
+		if startHour != 12 {
+			startHour += 12
+		}
 		time = strconv.Itoa(startHour) + ":" + startTimeSplit[1]
 		return time, nil
 	} else if strings.Contains(time, "AM") {
